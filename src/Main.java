@@ -4,7 +4,6 @@ import ru.temposta.model.Task;
 import ru.temposta.model.TaskStatus;
 import ru.temposta.service.TaskManager;
 
-import java.util.ArrayList;
 
 public class Main {
 
@@ -12,52 +11,52 @@ public class Main {
 
         TaskManager taskManager = new TaskManager();
 
-        taskManager.addTask(new Task ("Просто", "Положить на все", TaskStatus.DONE));
-        taskManager.addTask(new Epic("Ремонт", "Ремонт санузла"));
-        taskManager.addTask(new Subtask("Ванна", "Заменить ванну", TaskStatus.NEW, 1));
-        taskManager.addTask(new Subtask("Смесители", "Установить смесители", TaskStatus.NEW, 1));
-        taskManager.addTask(new Subtask("Зеркало", "Повесить зеркало", TaskStatus.NEW, 1));
-        System.out.println("taskManager = " + taskManager);
+        //Создайте две задачи, а также эпик с двумя подзадачами (делаем 3) и эпик с одной подзадачей.
+        Task task1 = new Task("Cделать 1 коммит",
+                "Наконец-то добраться до учебы и сделать первый коммит", TaskStatus.NEW);
+        Task task2 = new Task("Cделать 2 коммит",
+                "Наконец-то добраться до учебы и сделать первый коммит", TaskStatus.NEW);
 
+        taskManager.addAnyTask(task1);
+        taskManager.addAnyTask(task2);
 
-        Subtask st = new Subtask("Зеркало", "Повесить зеркало", TaskStatus.DONE, 1);
-        st.setId(4);
-        taskManager.updateTask(st);
-        System.out.println("taskManager = " + taskManager);
-        Object task = taskManager.getTaskById(0);
-        System.out.println("task = " + task);
+        Epic epic = new Epic ("Ремонт", "Ремонт санузла");
+        taskManager.addAnyTask(epic);
+        //через 1 конструктор
+        taskManager.addAnyTask(new Subtask("Ванна", "Заменить ванну", TaskStatus.NEW, epic.getId()));
+        //через 2 конструктор
+        taskManager.addAnyTask(new Subtask("Смесители", "Установить смесители", TaskStatus.NEW, epic));
+        Task task = new Task("Зеркало", "Повесить зеркало", TaskStatus.NEW);
+        //через 3 конструктор
+        Subtask subtask3 = new Subtask(task, epic);
+        taskManager.addAnyTask(subtask3);
 
-        System.out.println("taskManager.getTaskStatus(taskManager.getTaskById(0)) = " + taskManager.getTaskStatus(task));
-        System.out.println("taskManager.getTaskStatus(taskManager.getTaskById(1)) = " + taskManager.getTaskStatus(taskManager.getTaskById(1)));
-        System.out.println("taskManager.getTaskStatus(taskManager.getTaskById(2)) = " + taskManager.getTaskStatus(taskManager.getTaskById(2)));
-        System.out.println("taskManager.getTaskStatus(taskManager.getTaskById(3)) = " + taskManager.getTaskStatus(taskManager.getTaskById(3)));
-        System.out.println("taskManager.getTaskStatus(taskManager.getTaskById(4)) = " + taskManager.getTaskStatus(taskManager.getTaskById(4)));
+        Epic epic2 = new Epic ("Спорт", "Провести несколько занятий на тренажерах");
+        taskManager.addAnyTask(epic2);
+        Subtask subtask2_1 = new Subtask("Беговая дорожка","Пробежать 10 км", TaskStatus.NEW, epic2);
+        taskManager.addAnyTask(subtask2_1);
 
+        //Распечатайте списки эпиков, задач и подзадач через System.out.println(..)
+        //печать содержимого таскМенеджера
+        System.out.println(taskManager);
 
+        //Измените статусы созданных объектов, распечатайте их.
+        // Проверьте, что статус задачи и подзадачи сохранился,
+        // а статус эпика рассчитался по статусам подзадач.
+        subtask3.setStatus(TaskStatus.IN_PROGRESS);
+        taskManager.updateTask(subtask3);
+        subtask2_1.setStatus(TaskStatus.DONE);
+        taskManager.updateTask(subtask2_1);
+        Task task3 = (Task) taskManager.getAnyTaskById(0);
+        task3.setStatus(TaskStatus.DONE);
+        taskManager.updateTask(task3);
 
-        System.out.println("taskManager.getTaskById(0) = " + taskManager.getTaskById(0).toString());
-        System.out.println("taskManager.getTaskById(1) = " + taskManager.getTaskById(1).toString());
-        System.out.println("taskManager.getTaskById(2) = " + taskManager.getTaskById(2).toString());
-        Object object = taskManager.getTaskById(5);
-        System.out.println("taskManager.getTaskById(5) = " + object);
-        ArrayList<Object> tasks = taskManager.getTasks();
-        System.out.println("tasks = " + tasks);
+        System.out.println(taskManager);
 
-        taskManager.removeTaskById(0);
-        taskManager.removeTaskById(4);
-        System.out.println("taskManager = " + taskManager);
-        //taskManager.removeTask(2);
+        //И, наконец, попробуйте удалить одну из задач и один из эпиков.
+        taskManager.removeTaskById(1);
+        taskManager.removeTaskById(2);
 
-        taskManager.clearAllTasks();
-        System.out.println("taskManager = " + taskManager);
-
-
-
-
-
-
-
-
-
+        System.out.println(taskManager);
     }
 }

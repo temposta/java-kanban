@@ -7,6 +7,7 @@ import ru.temposta.model.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class TaskManager {
     private static HashMap<Integer, Task> tasks;
@@ -20,7 +21,7 @@ public class TaskManager {
     }
 
     //a. Получение списка всех задач.
-    public ArrayList<Object> getTasks() {
+    public ArrayList<Object> getAllTasks() {
         ArrayList<Object> sumList = new ArrayList<>();
         sumList.addAll(tasks.values());
         sumList.addAll(epics.values());
@@ -29,14 +30,14 @@ public class TaskManager {
     }
 
     //b. Удаление всех задач.
-    public void clearAllTasks() {
+    public void clear() {
         tasks.clear();
         epics.clear();
         subtasks.clear();
     }
 
     //c. Получение по идентификатору.
-    public Object getTaskById(int id) {
+    public Object getAnyTaskById(int id) {
         Task task = tasks.get(id);
         if (task != null) return task;
         Epic epic = epics.get(id);
@@ -46,20 +47,11 @@ public class TaskManager {
 
     //d. Создание. Сам объект должен передаваться в качестве параметра.
     //Универсальный метод для добавления любого типа задачи
-    public void addTask(Object obj) {
+    public void addAnyTask(Object obj) {
         switch (obj) {
-            case Epic epic -> epics.put(epic.getId(), epic);
-            case Subtask subtask -> {
-                int subtaskID = subtask.getId();
-                subtasks.put(subtaskID, subtask);
-                Epic epic = epics.get(subtask.getParentEpicID());
-                if (epic != null) {
-                    epic.addSubtaskID(subtaskID);
-                } else {
-                    System.out.println("The specified ParentEpicID does not exist");
-                }
-            }
-            case Task task -> tasks.put(task.getId(), task);
+            case Epic epic -> addEpic(epic);
+            case Subtask subtask -> addSubtask(subtask);
+            case Task task -> addTask(task);
             case null, default -> System.out.println("Invalid task");
         }
     }
@@ -67,8 +59,14 @@ public class TaskManager {
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
     public void updateTask(Object object) {
         switch (object) {
-            case Epic epic -> epics.put(epic.getId(), epic);
-            case Subtask subtask -> subtasks.put(subtask.getId(), subtask);
+            case Epic epic -> {
+                epics.put(epic.getId(), epic);
+                updateEpicStatus(epic);
+            }
+            case Subtask subtask -> {
+                subtasks.put(subtask.getId(), subtask);
+                updateEpicStatus(epics.get(subtask.getParentEpicID()));
+            }
             case Task task -> tasks.put(task.getId(), task);
             default -> throw new IllegalStateException("Unexpected value: " + object);
         }
@@ -86,7 +84,7 @@ public class TaskManager {
         }
     }
 
-    public TaskStatus getTaskStatus(Object object) {
+    public TaskStatus getAnyTaskStatus(Object object) {
         switch (object) {
             case Epic epic -> {
                 return epic.getStatus();
@@ -101,21 +99,61 @@ public class TaskManager {
         }
     }
 
+    private static void addEpic(Epic epic) {
+        epics.put(epic.getId(), epic);
+    }
+
+    private static void addSubtask(Subtask subtask) {
+        int subtaskID = subtask.getId();
+        subtasks.put(subtaskID, subtask);
+        Epic epic = epics.get(subtask.getParentEpicID());
+        if (epic != null) {
+            epic.addSubtaskID(subtaskID);
+            updateEpicStatus(epic);
+        } else {
+            System.out.println("The specified ParentEpicID does not exist");
+        }
+    }
+
+    private static void addTask(Task task) {
+        tasks.put(task.getId(), task);
+    }
+
     private void removeTask(int id) {
         tasks.remove(id);
     }
 
     private void removeEpic(int id) {
-        Epic epic = (Epic) getTaskById(id);
+        Epic epic = (Epic) getAnyTaskById(id);
         ArrayList<Integer> subTasksList = epic.getSubTasksIDList();
         subTasksList.forEach(i -> subtasks.remove(i));
         epics.remove(id);
     }
 
     private void removeSubtask(int id) {
-        Epic parentEpic = (Epic) getTaskById(subtasks.get(id).getParentEpicID());
+        Epic parentEpic = (Epic) getAnyTaskById(subtasks.get(id).getParentEpicID());
         parentEpic.removeSubtaskID(id);
         subtasks.remove(id);
+        updateEpicStatus(parentEpic);
+    }
+
+    private static void updateEpicStatus(Epic epic) {
+        ArrayList<Integer> subtasksList = epic.getSubTasksIDList();
+        if (!subtasksList.isEmpty()) {
+            int numberNEWStatus = 0;
+            int numberDONEStatus = 0;
+            int numberSubtasks = subtasksList.size();
+            for (Integer subtaskID : subtasksList) {
+                TaskStatus taskStatus = subtasks.get(subtaskID).getStatus();
+                if (Objects.requireNonNull(taskStatus) == TaskStatus.NEW) numberNEWStatus++;
+                else if (taskStatus == TaskStatus.DONE) numberDONEStatus++;
+            }
+            if (numberNEWStatus==numberSubtasks) epic.setStatus(TaskStatus.NEW);
+            else if (numberDONEStatus==numberSubtasks) epic.setStatus(TaskStatus.DONE);
+            else epic.setStatus(TaskStatus.IN_PROGRESS);
+        } else {
+            epic.setStatus(TaskStatus.NEW);
+        }
     }
 
     @Override

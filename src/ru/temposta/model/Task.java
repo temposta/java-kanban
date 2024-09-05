@@ -20,8 +20,17 @@ public class Task {
 
     //Метод необходим при обновлении задач, чтоб сохранить id старого объекта
     //При создании новых задач, эпиков, подзадач - не используется
+    //пока оставляем до принятия решения
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
+    public TaskStatus getStatus() {
+        return this.status;
     }
 
     @Override
@@ -32,9 +41,5 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
-    }
-
-    public TaskStatus getStatus() {
-        return this.status;
     }
 }
