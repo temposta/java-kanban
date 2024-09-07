@@ -32,7 +32,7 @@ public class Main {
         Task task = new Task("Зеркало", "Повесить зеркало", TaskStatus.NEW);
         Subtask subtask3 = new Subtask(task, epic1);
         taskManager.addAnyTask(subtask3);
-        Subtask subtask2_1 = new Subtask("Беговая дорожка","Пробежать 10 км", TaskStatus.NEW, epic2);
+        Subtask subtask2_1 = new Subtask("Беговая дорожка", "Пробежать 10 км", TaskStatus.NEW, epic2);
         taskManager.addAnyTask(subtask2_1);
 
         //Распечатайте списки эпиков, задач и подзадач через System.out.println(..)
@@ -64,7 +64,6 @@ public class Main {
         taskManager.removeTaskById(7);
 
         System.out.println(taskManager);
-
 
 
     }
