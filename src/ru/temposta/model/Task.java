@@ -1,14 +1,12 @@
 package ru.temposta.model;
 
 public class Task {
-    protected static int counter = -1;
-    protected int id;
+    protected int id = -1;
     protected String title;
     protected String description;
     protected TaskStatus status;
 
     public Task(String title, String description, TaskStatus status) {
-        this.id = ++counter;
         this.title = title;
         this.description = description;
         this.status = status;
@@ -18,11 +16,9 @@ public class Task {
         return id;
     }
 
-    //Метод необходим при обновлении задач, чтоб сохранить id старого объекта
-    //При создании новых задач, эпиков, подзадач - не используется
-    //пока оставляем до принятия решения
-    public void setId(int id) {
+    public Task setId(int id) {
         this.id = id;
+        return this;
     }
 
     public void setStatus(TaskStatus status) {

@@ -14,31 +14,31 @@ public class Main {
         //Создайте две задачи, а также эпик с двумя подзадачами (делаем 3) и эпик с одной подзадачей.
         Task task1 = new Task("Cделать 1 коммит",
                 "Наконец-то добраться до учебы и сделать первый коммит", TaskStatus.NEW);
+        taskManager.addAnyTask(task1);
         Task task2 = new Task("Cделать 2 коммит",
                 "Наконец-то добраться до учебы и сделать первый коммит", TaskStatus.NEW);
-
-        taskManager.addAnyTask(task1);
         taskManager.addAnyTask(task2);
-
-        Epic epic = new Epic ("Ремонт", "Ремонт санузла");
-        taskManager.addAnyTask(epic);
-        //через 1 конструктор
-        taskManager.addAnyTask(new Subtask("Ванна", "Заменить ванну", TaskStatus.NEW, epic.getId()));
-        //через 2 конструктор
-        taskManager.addAnyTask(new Subtask("Смесители", "Установить смесители", TaskStatus.NEW, epic));
-        Task task = new Task("Зеркало", "Повесить зеркало", TaskStatus.NEW);
-        //через 3 конструктор
-        Subtask subtask3 = new Subtask(task, epic);
-        taskManager.addAnyTask(subtask3);
-
-        Epic epic2 = new Epic ("Спорт", "Провести несколько занятий на тренажерах");
+        Epic epic1 = new Epic("Ремонт", "Ремонт санузла");
+        taskManager.addAnyTask(epic1);
+        Epic epic2 = new Epic("Спорт", "Провести несколько занятий на тренажерах");
         taskManager.addAnyTask(epic2);
+        //через 1 конструктор
+        Subtask subtask1 = new Subtask("Ванна", "Заменить ванну", TaskStatus.NEW, epic1.getId());
+        taskManager.addAnyTask(subtask1);
+        //через 2 конструктор
+        Subtask subtask2 = new Subtask("Смесители", "Установить смесители", TaskStatus.NEW, epic1);
+        taskManager.addAnyTask(subtask2);
+        //через 3 конструктор
+        Task task = new Task("Зеркало", "Повесить зеркало", TaskStatus.NEW);
+        Subtask subtask3 = new Subtask(task, epic1);
+        taskManager.addAnyTask(subtask3);
         Subtask subtask2_1 = new Subtask("Беговая дорожка","Пробежать 10 км", TaskStatus.NEW, epic2);
         taskManager.addAnyTask(subtask2_1);
 
         //Распечатайте списки эпиков, задач и подзадач через System.out.println(..)
         //печать содержимого таскМенеджера
         System.out.println(taskManager);
+        System.out.println();
 
         //Измените статусы созданных объектов, распечатайте их.
         // Проверьте, что статус задачи и подзадачи сохранился,
@@ -58,5 +58,14 @@ public class Main {
         taskManager.removeTaskById(2);
 
         System.out.println(taskManager);
+
+        //Здесь удаляем подзадачу, итого подзадач у Эпика станет - 0 -
+        // проверяем возврат статуса Эпика в исходный из DONE в NEW
+        taskManager.removeTaskById(7);
+
+        System.out.println(taskManager);
+
+
+
     }
 }

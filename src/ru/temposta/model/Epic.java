@@ -24,6 +24,11 @@ public class Epic extends Task {
     }
 
     @Override
+    public Epic setId(int id) {
+        return (Epic) super.setId(id);
+    }
+
+    @Override
     public String toString() {
         return "Epic{" +
                 "subTasks=" + subTasks +
