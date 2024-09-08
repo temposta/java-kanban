@@ -106,6 +106,18 @@ public class TaskManager {
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder("TaskManager{\nTasks:\n");
+        for (Task task : tasks.values()) result.append(task.toString()).append("\n");
+        result.append("Epics:\n");
+        for (Epic epic : epics.values()) result.append(epic.toString()).append("\n");
+        result.append("Subtasks:\n");
+        for (Subtask subtask : subtasks.values()) result.append(subtask.toString()).append("\n");
+        result.append("}");
+        return result.toString();
+    }
+
     //Метод для выдачи очередного уникального идентификатора
     private int getNextID() {
         return ++counter;
@@ -187,17 +199,5 @@ public class TaskManager {
         } else {
             epic.setStatus(TaskStatus.NEW);
         }
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder result = new StringBuilder("TaskManager{\nTasks:\n");
-        for (Task task : tasks.values()) result.append(task.toString()).append("\n");
-        result.append("Epics:\n");
-        for (Epic epic : epics.values()) result.append(epic.toString()).append("\n");
-        result.append("Subtasks:\n");
-        for (Subtask subtask : subtasks.values()) result.append(subtask.toString()).append("\n");
-        result.append("}");
-        return result.toString();
     }
 }
