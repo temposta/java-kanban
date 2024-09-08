@@ -37,20 +37,19 @@ public class TaskManager {
     }
 
     //b.1 Удаление всех задач.
-
     public void clearTasks() {
         tasks.clear();
     }
-    //b.2 Удаление всех задач - Эпиков.
 
+    //b.2 Удаление всех задач - Эпиков.
     public void clearEpics() {
         epics.clear();
         //Удалять Эпики без удаления подзадач не имеет смысла
         //поэтому удаляем и все подзадачи
         subtasks.clear();
     }
-    //b.3 Удаление всех задач - Подзадач.
 
+    //b.3 Удаление всех задач - Подзадач.
     public void clearSubtasks() {
         subtasks.clear();
         //В связи с удалением подзадач, обновляем статусы Эпиков
@@ -60,18 +59,18 @@ public class TaskManager {
             epic.clearSubtasks();
         });
     }
-    //c. Получение по идентификатору.
 
-    public Object getAnyTaskById(int id) {
+    //c. Получение по идентификатору.
+    public Task getAnyTaskById(int id) {
         Task task = tasks.get(id);
         if (task != null) return task;
         Epic epic = epics.get(id);
         if (epic != null) return epic;
         return subtasks.get(id);
     }
+
     //d. Создание. Сам объект должен передаваться в качестве параметра.
     //Универсальный метод для добавления любого типа задачи
-
     public void addAnyTask(Task task) {
         switch (task) {
             case Epic epic -> addEpic(epic);
@@ -79,8 +78,8 @@ public class TaskManager {
             default -> addTask(task);
         }
     }
-    // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
 
+    // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
     public void updateTask(Task task) {
         switch (task) {
             case Epic epic -> {
@@ -95,8 +94,8 @@ public class TaskManager {
         }
 
     }
-    // f. Удаление по идентификатору.
 
+    // f. Удаление по идентификатору.
     public void removeTaskById(int id) {
         if (tasks.get(id) != null) {
             removeTask(id);
@@ -146,7 +145,7 @@ public class TaskManager {
 
     private void removeSubtask(int id) {
         Subtask subtask = subtasks.remove(id);
-        Epic parentEpic = (Epic) getAnyTaskById(subtask.getParentEpicID());
+        Epic parentEpic = epics.get(subtask.getParentEpicID());
         parentEpic.removeSubtaskID(id);
         updateEpicStatus(parentEpic);
     }
@@ -158,22 +157,33 @@ public class TaskManager {
         //его необходимо вернуть в исходный статус (NEW)
         if (!subtasksList.isEmpty()) {
             int numberNEWStatus = 0;
+            int numberDONEStatus = 0;
 
             for (Integer subtaskID : subtasksList) {
                 TaskStatus taskStatus = subtasks.get(subtaskID).getStatus();
 
-                //обеспечиваем ранний выход, если хоть одна подзадача в работе
-                if (taskStatus == TaskStatus.IN_PROGRESS) {
+                switch (taskStatus) {
+                    case NEW:
+                        numberNEWStatus++;
+                        break;
+                    case DONE:
+                        numberDONEStatus++;
+                        break;
+                    case IN_PROGRESS: {
+                        //обеспечиваем ранний выход, если хоть одна подзадача в работе
+                        epic.setStatus(TaskStatus.IN_PROGRESS);
+                        return;
+                    }
+                }
+
+                //обеспечиваем ранний выход, если есть задачи и NEW и DONE
+                if ((numberNEWStatus > 0) && (numberDONEStatus > 0)) {
                     epic.setStatus(TaskStatus.IN_PROGRESS);
                     return;
                 }
-
-                if (Objects.requireNonNull(taskStatus) == TaskStatus.NEW) numberNEWStatus++;
             }
-
             if (numberNEWStatus > 0) epic.setStatus(TaskStatus.NEW);
             else epic.setStatus(TaskStatus.DONE);
-
         } else {
             epic.setStatus(TaskStatus.NEW);
         }
