@@ -54,7 +54,11 @@ public class TaskManager {
     public void clearSubtasks() {
         subtasks.clear();
         //В связи с удалением подзадач, обновляем статусы Эпиков
-        epics.values().forEach(epic -> epic.setStatus(TaskStatus.NEW));
+        //чистим списки подзадач
+        epics.values().forEach(epic -> {
+            epic.setStatus(TaskStatus.NEW);
+            epic.clearSubtasks();
+        });
     }
     //c. Получение по идентификатору.
 

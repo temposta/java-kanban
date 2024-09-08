@@ -18,6 +18,10 @@ public class Epic extends Task {
         subTasks.remove(id);
     }
 
+    public void clearSubtasks() {
+        subTasks.clear();
+    }
+
     //3) a. Получение списка всех подзадач определённого эпика.
     public ArrayList<Integer> getSubTasksIDList() {
         return subTasks;
