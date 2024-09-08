@@ -90,6 +90,7 @@ public class TaskManager {
                 Subtask oldSubtask = subtasks.get(subtask.getId());
                 oldSubtask.setTitle(subtask.getTitle());
                 oldSubtask.setDescription(subtask.getDescription());
+                oldSubtask.setStatus(subtask.getStatus());
                 updateEpicStatus(epics.get(subtask.getParentEpicID()));
             }
             default -> tasks.put(task.getId(), task);
