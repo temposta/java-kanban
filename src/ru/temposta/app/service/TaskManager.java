@@ -82,8 +82,9 @@ public class TaskManager {
     public void updateTask(Task task) {
         switch (task) {
             case Epic epic -> {
-                epics.put(epic.getId(), epic);
-                updateEpicStatus(epic);
+                Epic oldEpic = epics.get(epic.getId());
+                oldEpic.setTitle(epic.getTitle());
+                oldEpic.setDescription(epic.getDescription());
             }
             case Subtask subtask -> {
                 subtasks.put(subtask.getId(), subtask);
