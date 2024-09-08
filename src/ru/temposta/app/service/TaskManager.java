@@ -21,47 +21,43 @@ public class TaskManager {
         subtasks = new HashMap<>();
     }
 
-    //Метод для выдачи очередного уникального идентификатора
-    private int getNextID() {
-        return ++counter;
-    }
-
     //a.1 Получение списка всех задач.
-    public HashMap<Integer, Task> getTasks() {
-        return tasks;
+    public ArrayList<Task> getTasks() {
+        return new ArrayList<>(tasks.values());
     }
 
     //a.2 Получение списка всех Эпиков.
-    public HashMap<Integer, Epic> getEpics() {
-        return epics;
+    public ArrayList<Epic> getEpics() {
+        return new ArrayList<>(epics.values());
     }
 
     //a.3 Получение списка всех Подзадач.
-    public HashMap<Integer, Subtask> getSubtasks() {
-        return subtasks;
+    public ArrayList<Subtask> getSubtasks() {
+        return new ArrayList<>(subtasks.values());
     }
 
     //b.1 Удаление всех задач.
+
     public void clearTasks() {
         tasks.clear();
     }
-
     //b.2 Удаление всех задач - Эпиков.
+
     public void clearEpics() {
         epics.clear();
         //Удалять Эпики без удаления подзадач не имеет смысла
         //поэтому удаляем и все подзадачи
         subtasks.clear();
     }
-
     //b.3 Удаление всех задач - Подзадач.
+
     public void clearSubtasks() {
         subtasks.clear();
         //В связи с удалением подзадач, обновляем статусы Эпиков
         epics.values().forEach(epic -> epic.setStatus(TaskStatus.NEW));
     }
-
     //c. Получение по идентификатору.
+
     public Object getAnyTaskById(int id) {
         Task task = tasks.get(id);
         if (task != null) return task;
@@ -69,9 +65,9 @@ public class TaskManager {
         if (epic != null) return epic;
         return subtasks.get(id);
     }
-
     //d. Создание. Сам объект должен передаваться в качестве параметра.
     //Универсальный метод для добавления любого типа задачи
+
     public void addAnyTask(Task task) {
         switch (task) {
             case Epic epic -> addEpic(epic);
@@ -79,8 +75,8 @@ public class TaskManager {
             default -> addTask(task);
         }
     }
-
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
+
     public void updateTask(Task task) {
         switch (task) {
             case Epic epic -> {
@@ -95,8 +91,8 @@ public class TaskManager {
         }
 
     }
-
     // f. Удаление по идентификатору.
+
     public void removeTaskById(int id) {
         if (tasks.get(id) != null) {
             removeTask(id);
@@ -105,6 +101,11 @@ public class TaskManager {
         } else if (subtasks.get(id) != null) {
             removeSubtask(id);
         }
+    }
+
+    //Метод для выдачи очередного уникального идентификатора
+    private int getNextID() {
+        return ++counter;
     }
 
     private void addEpic(Epic epic) {
