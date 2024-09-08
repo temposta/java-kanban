@@ -1,8 +1,10 @@
-import ru.temposta.model.Epic;
-import ru.temposta.model.Subtask;
-import ru.temposta.model.Task;
-import ru.temposta.model.TaskStatus;
-import ru.temposta.service.TaskManager;
+package ru.temposta.app;
+
+import ru.temposta.app.model.Epic;
+import ru.temposta.app.model.Subtask;
+import ru.temposta.app.model.Task;
+import ru.temposta.app.model.TaskStatus;
+import ru.temposta.app.service.TaskManager;
 
 
 public class Main {

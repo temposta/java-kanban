@@ -1,4 +1,4 @@
-package ru.temposta.model;
+package ru.temposta.app.model;
 
 public class Task {
     protected int id = -1;

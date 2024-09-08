@@ -1,4 +1,4 @@
-package ru.temposta.model;
+package ru.temposta.app.model;
 
 public class Subtask extends Task {
     private final int parentEpicID;

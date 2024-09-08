@@ -1,4 +1,4 @@
-package ru.temposta.model;
+package ru.temposta.app.model;
 
 import java.util.ArrayList;
 
