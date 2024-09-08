@@ -87,7 +87,9 @@ public class TaskManager {
                 oldEpic.setDescription(epic.getDescription());
             }
             case Subtask subtask -> {
-                subtasks.put(subtask.getId(), subtask);
+                Subtask oldSubtask = subtasks.get(subtask.getId());
+                oldSubtask.setTitle(subtask.getTitle());
+                oldSubtask.setDescription(subtask.getDescription());
                 updateEpicStatus(epics.get(subtask.getParentEpicID()));
             }
             default -> tasks.put(task.getId(), task);
