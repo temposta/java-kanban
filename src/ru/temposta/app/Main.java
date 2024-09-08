@@ -49,7 +49,7 @@ public class Main {
         taskManager.updateTask(subtask3);
         subtask2_1.setStatus(TaskStatus.DONE);
         taskManager.updateTask(subtask2_1);
-        Task task3 = (Task) taskManager.getAnyTaskById(0);
+        Task task3 = taskManager.getAnyTaskById(0);
         task3.setStatus(TaskStatus.DONE);
         taskManager.updateTask(task3);
 
