@@ -4,6 +4,7 @@ import ru.temposta.app.model.Epic;
 import ru.temposta.app.model.Subtask;
 import ru.temposta.app.model.Task;
 import ru.temposta.app.model.TaskStatus;
+import ru.temposta.app.service.InMemoryTaskManager;
 import ru.temposta.app.service.TaskManager;
 
 
@@ -11,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        TaskManager taskManager = new TaskManager();
+        TaskManager taskManager = new InMemoryTaskManager();
 
         //Создайте две задачи, а также эпик с двумя подзадачами (делаем 3) и эпик с одной подзадачей.
         Task task1 = new Task("Cделать 1 коммит",
