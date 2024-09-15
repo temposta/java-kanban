@@ -1,5 +1,6 @@
 package ru.temposta.app.model;
 
+
 public class Task {
     protected int id = -1;
     protected String title;
@@ -53,5 +54,17 @@ public class Task {
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof Task task)) return false;
+        return id == task.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }
