@@ -7,17 +7,20 @@ import ru.temposta.app.model.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private int counter = -1;
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, Epic> epics;
     private final HashMap<Integer, Subtask> subtasks;
+    final HistoryManager historyManager;
 
-    public InMemoryTaskManager() {
+    public InMemoryTaskManager(HistoryManager historyManager) {
         tasks = new HashMap<>();
         epics = new HashMap<>();
         subtasks = new HashMap<>();
+        this.historyManager = historyManager;
     }
 
     //a.1 Получение списка всех задач.
@@ -69,10 +72,21 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public Task getAnyTaskById(int id) {
         Task task = tasks.get(id);
-        if (task != null) return task;
+        if (task != null) {
+            historyManager.add(task);
+            return task;
+        }
         Epic epic = epics.get(id);
-        if (epic != null) return epic;
-        return subtasks.get(id);
+        if (epic != null) {
+            historyManager.add(epic);
+            return epic;
+        }
+        Subtask subtask = subtasks.get(id);
+        if (subtask != null) {
+            historyManager.add(subtask);
+            return subtask;
+        }
+        return null;
     }
 
     //d. Создание. Сам объект должен передаваться в качестве параметра.
@@ -129,6 +143,10 @@ public class InMemoryTaskManager implements TaskManager {
         for (Subtask subtask : subtasks.values()) result.append(subtask.toString()).append("\n");
         result.append("}");
         return result.toString();
+    }
+
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
     //Метод для выдачи очередного уникального идентификатора
