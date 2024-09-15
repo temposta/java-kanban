@@ -4,7 +4,6 @@ import ru.temposta.app.model.Epic;
 import ru.temposta.app.model.Subtask;
 import ru.temposta.app.model.Task;
 import ru.temposta.app.model.TaskStatus;
-import ru.temposta.app.service.InMemoryTaskManager;
 import ru.temposta.app.service.TaskManager;
 import ru.temposta.app.util.Managers;
 
