@@ -4,7 +4,7 @@ import ru.temposta.app.model.Epic;
 import ru.temposta.app.model.Subtask;
 import ru.temposta.app.model.Task;
 import ru.temposta.app.model.TaskStatus;
-import ru.temposta.app.service.TaskManager;
+import ru.temposta.app.service.InMemoryTaskManager;
 import ru.temposta.app.util.Managers;
 
 
@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        TaskManager taskManager = Managers.getDefault();
+        InMemoryTaskManager taskManager = Managers.getDefault();
 
         //Создайте две задачи, а также эпик с двумя подзадачами (делаем 3) и эпик с одной подзадачей.
         Task addedTask;
@@ -45,6 +45,16 @@ public class Main {
         //печать содержимого таскМенеджера
         System.out.println(taskManager);
         System.out.println();
+
+        //Формируем историю просмотров задач
+        taskManager.getAnyTaskById(1);
+        taskManager.getAnyTaskById(3);
+        taskManager.getAnyTaskById(6);
+        taskManager.getAnyTaskById(0);
+
+        System.out.println("-------История просмотров:-----------------");
+        taskManager.getHistory().forEach(System.out::println);
+        System.out.println("-------Окончание истории просмотров:-------");
 
         //Измените статусы созданных объектов, распечатайте их.
         // Проверьте, что статус задачи и подзадачи сохранился,
