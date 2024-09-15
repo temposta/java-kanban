@@ -11,9 +11,9 @@ import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
     private int counter = -1;
-    private final HashMap<Integer, Task> tasks;
-    private final HashMap<Integer, Epic> epics;
-    private final HashMap<Integer, Subtask> subtasks;
+    final HashMap<Integer, Task> tasks;
+    final HashMap<Integer, Epic> epics;
+    final HashMap<Integer, Subtask> subtasks;
     final HistoryManager historyManager;
 
     public InMemoryTaskManager(HistoryManager historyManager) {
@@ -92,12 +92,14 @@ public class InMemoryTaskManager implements TaskManager {
     //d. Создание. Сам объект должен передаваться в качестве параметра.
     //Универсальный метод для добавления любого типа задачи
     @Override
-    public void addAnyTask(Task task) {
+    public Task addAnyTask(Task task) {
+        Task result;
         switch (task) {
-            case Epic epic -> addEpic(epic);
-            case Subtask subtask -> addSubtask(subtask);
-            default -> addTask(task);
+            case Epic epic -> result = addEpic(epic);
+            case Subtask subtask -> result = addSubtask(subtask);
+            default -> result = addTask(task);
         }
+        return result;
     }
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
@@ -154,26 +156,31 @@ public class InMemoryTaskManager implements TaskManager {
         return ++counter;
     }
 
-    private void addEpic(Epic epic) {
+    private Epic addEpic(Epic epic) {
         int id = getNextID();
         epics.put(id, epic.setId(id));
+        return epics.get(id);
     }
 
-    private void addSubtask(Subtask subtask) {
+    private Subtask addSubtask(Subtask subtask) {
         int id = getNextID();
-        subtasks.put(id, subtask.setId(id));
         Epic epic = epics.get(subtask.getParentEpicID());
         if (epic != null) {
             epic.addSubtaskID(id);
+            subtasks.put(id, subtask.setId(id));
             updateEpicStatus(epic);
         } else {
             System.out.println("The specified ParentEpicID does not exist");
+            return null;
         }
+        return subtasks.get(id);
     }
 
-    private void addTask(Task task) {
+    private Task addTask(Task task) {
         int id = getNextID();
         tasks.put(id, task.setId(id));
+        return tasks.get(id);
+
     }
 
     private void removeTask(int id) {

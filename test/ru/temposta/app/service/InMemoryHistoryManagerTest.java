@@ -106,4 +106,24 @@ class InMemoryHistoryManagerTest {
 
 
     }
+
+    @Test
+    @DisplayName("провера неизменности задачи при добавлении еще одной задачи в менеджер")
+    void shouldUnchangedPrevAddTask() {
+        //подготовка данных
+        Task task = new Task("Title", "Description", TaskStatus.NEW);
+        Subtask subtask = new Subtask("Title", "description", TaskStatus.IN_PROGRESS, 1);
+        //тестирование
+        historyManager.add(task);
+        historyManager.add(subtask);
+        //проверка
+        assertTasks(task, historyManager.history.removeFirst());
+    }
+
+    private void assertTasks(Task task, Task task1) {
+        assertEquals(task.getTitle(), task1.getTitle());
+        assertEquals(task.getDescription(), task1.getDescription());
+        assertEquals(task.getStatus(), task1.getStatus());
+        assertEquals(task.getId(), task1.getId());
+    }
 }

@@ -30,7 +30,7 @@ public interface TaskManager {
 
     //d. Создание. Сам объект должен передаваться в качестве параметра.
     //Универсальный метод для добавления любого типа задачи
-    void addAnyTask(Task task);
+    Task addAnyTask(Task task);
 
     // e. Обновление. Новая версия объекта с верным идентификатором передаётся в виде параметра.
     void updateTask(Task task);

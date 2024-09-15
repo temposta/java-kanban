@@ -4,7 +4,6 @@ import ru.temposta.app.model.Epic;
 import ru.temposta.app.model.Subtask;
 import ru.temposta.app.model.Task;
 import ru.temposta.app.model.TaskStatus;
-import ru.temposta.app.service.InMemoryTaskManager;
 import ru.temposta.app.service.TaskManager;
 import ru.temposta.app.util.Managers;
 
@@ -16,9 +15,12 @@ public class Main {
         TaskManager taskManager = Managers.getDefault();
 
         //Создайте две задачи, а также эпик с двумя подзадачами (делаем 3) и эпик с одной подзадачей.
-        Task task1 = new Task("Cделать 1 коммит",
-                "Наконец-то добраться до учебы и сделать первый коммит", TaskStatus.NEW);
-        taskManager.addAnyTask(task1);
+        Task addedTask;
+        addedTask = taskManager.addAnyTask(new Task("Cделать 1 коммит",
+                "Наконец-то добраться до учебы и сделать первый коммит", TaskStatus.NEW));
+        System.out.println("addedTask = " + addedTask);
+        System.out.println("taskManager = " + taskManager);
+
         Task task2 = new Task("Cделать 2 коммит",
                 "Наконец-то добраться до учебы и сделать первый коммит", TaskStatus.NEW);
         taskManager.addAnyTask(task2);
