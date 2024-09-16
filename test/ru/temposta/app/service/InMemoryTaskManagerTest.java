@@ -124,4 +124,54 @@ class InMemoryTaskManagerTest {
         assertEquals(subtasksSize + 1, newSubtasksSize);
         assertEquals(epicsSize + 1, newEpicsSize);
     }
+
+    @Test
+    @DisplayName("проверка обновления статуса Эпика при обновлении/добавлении/удалении его подзадач")
+    void shouldUpdateEpicStatusWhenAddDeleteUpdateSubtasks() {
+        //проверка исходного состояния
+        assertEquals(epic.getStatus(), TaskStatus.NEW);
+        //подготовка
+        subtask.setStatus(TaskStatus.IN_PROGRESS);
+        //тест
+        taskManager.updateTask(subtask);
+        //проверка
+        assertEquals(epic.getStatus(), TaskStatus.IN_PROGRESS);
+        //подготовка
+        subtask.setStatus(TaskStatus.DONE);
+        //тест
+        taskManager.updateTask(subtask);
+        //проверка
+        assertEquals(epic.getStatus(), TaskStatus.DONE);
+        //подготовка
+        Subtask subtask5 = (Subtask) taskManager.addAnyTask(new Subtask("Title5", "Description5",
+                TaskStatus.NEW, epic.getId()));
+        //тест
+        taskManager.addAnyTask(subtask5);
+        //проверка
+        assertEquals(epic.getStatus(), TaskStatus.IN_PROGRESS);
+        //тест
+        taskManager.removeTaskById(subtask.getId());
+        taskManager.removeTaskById(subtask5.getId());
+        //проверка
+        assertEquals(epic.getStatus(), TaskStatus.NEW);
+
+    }
+
+    @Test
+    @DisplayName("проверка удаления задач")
+    void shouldRemoveTask() {
+        taskManager.removeTaskById(task.getId());
+        assertEquals(taskManager.tasks.size(), 1);
+        taskManager.removeTaskById(task2.getId());
+        assertTrue(taskManager.tasks.isEmpty());
+    }
+
+    @Test
+    @DisplayName("проверка удаления Эпика, при этом каскадное удаление связанной задачи")
+    void shouldRemoveEpic() {
+        int subtasksSize = taskManager.subtasks.size();
+        taskManager.removeTaskById(epic.getId());
+        assertEquals(taskManager.epics.size(), 1);
+        assertEquals(taskManager.subtasks.size(), subtasksSize - 1);
+    }
 }
