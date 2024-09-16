@@ -8,7 +8,6 @@ import ru.temposta.app.model.Subtask;
 import ru.temposta.app.model.Task;
 import ru.temposta.app.model.TaskStatus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -60,21 +59,21 @@ class InMemoryTaskManagerTest {
     @Test
     @DisplayName("проверка получения списка задач")
     void shouldGetTasks() {
-        ArrayList<Task> tasks = taskManager.getTasks();
+        List<Task> tasks = taskManager.getTasks();
         assertArrayEquals(tasks.toArray(), taskManager.tasks.values().toArray());
     }
 
     @Test
     @DisplayName("проверка получения списка Эпиков")
     void shouldGetEpics() {
-        ArrayList<Epic> epics = taskManager.getEpics();
+        List<Epic> epics = taskManager.getEpics();
         assertArrayEquals(epics.toArray(), taskManager.epics.values().toArray());
     }
 
     @Test
     @DisplayName("проверка получения списка подзадач")
     void shouldGetSubtasks() {
-        ArrayList<Subtask> subtasks = taskManager.getSubtasks();
+        List<Subtask> subtasks = taskManager.getSubtasks();
         assertArrayEquals(subtasks.toArray(), taskManager.subtasks.values().toArray());
     }
 

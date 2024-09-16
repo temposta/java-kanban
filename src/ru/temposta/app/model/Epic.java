@@ -1,9 +1,10 @@
 package ru.temposta.app.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Epic extends Task {
-    private final ArrayList<Integer> subTasks;
+    private final List<Integer> subTasks;
 
     public Epic(String title, String description) {
         super(title, description, TaskStatus.NEW);
@@ -23,7 +24,7 @@ public class Epic extends Task {
     }
 
     //3) a. Получение списка всех подзадач определённого эпика.
-    public ArrayList<Integer> getSubTasksIDList() {
+    public List<Integer> getSubTasksIDList() {
         return subTasks;
     }
 

@@ -25,19 +25,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     //a.1 Получение списка всех задач.
     @Override
-    public ArrayList<Task> getTasks() {
+    public List<Task> getTasks() {
         return new ArrayList<>(tasks.values());
     }
 
     //a.2 Получение списка всех Эпиков.
     @Override
-    public ArrayList<Epic> getEpics() {
+    public List<Epic> getEpics() {
         return new ArrayList<>(epics.values());
     }
 
     //a.3 Получение списка всех Подзадач.
     @Override
-    public ArrayList<Subtask> getSubtasks() {
+    public List<Subtask> getSubtasks() {
         return new ArrayList<>(subtasks.values());
     }
 
@@ -147,6 +147,7 @@ public class InMemoryTaskManager implements TaskManager {
         return result.toString();
     }
 
+    @Override
     public List<Task> getHistory() {
         return historyManager.getHistory();
     }
@@ -189,7 +190,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     private void removeEpic(int id) {
         final Epic epic = epics.remove(id);
-        ArrayList<Integer> subTasksList = epic.getSubTasksIDList();
+        List<Integer> subTasksList = epic.getSubTasksIDList();
         subTasksList.forEach(subtasks::remove);
     }
 
@@ -201,7 +202,7 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     private void updateEpicStatus(Epic epic) {
-        ArrayList<Integer> subtasksList = epic.getSubTasksIDList();
+        List<Integer> subtasksList = epic.getSubTasksIDList();
         //Обязательно проверяем наличие подзадач у Эпика, так как при удалении
         //всех подзадач, если Эпик был в статусе, отличном от NEW,
         //его необходимо вернуть в исходный статус (NEW)

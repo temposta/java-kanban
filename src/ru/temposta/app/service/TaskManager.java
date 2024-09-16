@@ -4,17 +4,17 @@ import ru.temposta.app.model.Epic;
 import ru.temposta.app.model.Subtask;
 import ru.temposta.app.model.Task;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
     //a.1 Получение списка всех задач.
-    ArrayList<Task> getTasks();
+    List<Task> getTasks();
 
     //a.2 Получение списка всех Эпиков.
-    ArrayList<Epic> getEpics();
+    List<Epic> getEpics();
 
     //a.3 Получение списка всех Подзадач.
-    ArrayList<Subtask> getSubtasks();
+    List<Subtask> getSubtasks();
 
     //b.1 Удаление всех задач.
     void clearTasks();
@@ -37,4 +37,6 @@ public interface TaskManager {
 
     // f. Удаление по идентификатору.
     void removeTaskById(int id);
+
+    List<Task> getHistory();
 }

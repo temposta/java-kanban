@@ -4,7 +4,7 @@ import ru.temposta.app.model.Epic;
 import ru.temposta.app.model.Subtask;
 import ru.temposta.app.model.Task;
 import ru.temposta.app.model.TaskStatus;
-import ru.temposta.app.service.InMemoryTaskManager;
+import ru.temposta.app.service.TaskManager;
 import ru.temposta.app.util.Managers;
 
 
@@ -12,7 +12,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        InMemoryTaskManager taskManager = Managers.getDefault();
+        TaskManager taskManager = Managers.getDefault();
 
         //Создайте две задачи, а также эпик с двумя подзадачами (делаем 3) и эпик с одной подзадачей.
         Task addedTask;
