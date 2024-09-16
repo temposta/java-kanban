@@ -8,12 +8,13 @@ import ru.temposta.app.model.TaskStatus;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
     private int counter = -1;
-    final HashMap<Integer, Task> tasks;
-    final HashMap<Integer, Epic> epics;
-    final HashMap<Integer, Subtask> subtasks;
+    final Map<Integer, Task> tasks;
+    final Map<Integer, Epic> epics;
+    final Map<Integer, Subtask> subtasks;
     final HistoryManager historyManager;
 
     public InMemoryTaskManager(HistoryManager historyManager) {
