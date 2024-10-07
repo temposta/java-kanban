@@ -1,5 +1,5 @@
 # java-kanban
 Repository for homework project.
 
-## sprint 4 - (current)
+## sprint_6-solution
 
