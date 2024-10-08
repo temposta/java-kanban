@@ -23,7 +23,7 @@ class InMemoryHistoryManagerTest {
 
     @Test
     @DisplayName("при добавлении 1 задачи размер списка равен 1, задача добавлена")
-    void shouldAdd1Task() {
+    void shouldAddAndRemove1Task() {
         //подготовка данных
         Task task = new Task("Title", "Description", TaskStatus.NEW);
 
@@ -33,6 +33,12 @@ class InMemoryHistoryManagerTest {
         //проверяем
         assertFalse(historyManager.history.isEmpty());
         assertEquals(1, historyManager.history.size());
+
+        //снова тестируем
+        historyManager.remove(task.getId());
+
+        //снова проверяем
+        assertTrue(historyManager.history.isEmpty());
     }
 
     @Test
@@ -43,7 +49,7 @@ class InMemoryHistoryManagerTest {
 
         //тестируем
         for (int i = 0; i < 10; i++) {
-            historyManager.add(task);
+            historyManager.add(task.setId(i));
         }
 
         //проверяем
@@ -58,7 +64,7 @@ class InMemoryHistoryManagerTest {
 
         //тестируем
         for (int i = 0; i < 13; i++) {
-            historyManager.add(task);
+            historyManager.add(task.setId(i));
         }
 
         //проверяем
@@ -69,9 +75,9 @@ class InMemoryHistoryManagerTest {
     @DisplayName("получение списка просмотренных задач при вызове метода")
     void getHistory() {
         //подготовка данных
-        Task task = new Task("Title", "Description", TaskStatus.NEW);
-        Subtask subtask = new Subtask("Title", "description", TaskStatus.IN_PROGRESS, 1);
-        Epic epic = new Epic("Title", "description");
+        Task task = new Task("Title", "Description", TaskStatus.NEW).setId(5);
+        Subtask subtask = new Subtask("Title", "description", TaskStatus.IN_PROGRESS, 1).setId(6);
+        Epic epic = new Epic("Title", "description").setId(1);
         historyManager.add(task);
         historyManager.add(subtask);
         historyManager.add(epic);
@@ -86,16 +92,62 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    @DisplayName("провера неизменности задачи при добавлении еще одной задачи в менеджер")
+    @DisplayName("проверка неизменности задачи при добавлении еще одной задачи в менеджер")
     void shouldUnchangedPrevAddTask() {
         //подготовка данных
-        Task task = new Task("Title", "Description", TaskStatus.NEW);
-        Subtask subtask = new Subtask("Title", "description", TaskStatus.IN_PROGRESS, 1);
+        Task task = new Task("Title", "Description", TaskStatus.NEW).setId(1);
+        Subtask subtask = new Subtask("Title", "description", TaskStatus.IN_PROGRESS, 1).setId(2);
         //тестирование
         historyManager.add(task);
         historyManager.add(subtask);
         //проверка
-        assertTasks(task, historyManager.history.removeFirst());
+        Task firstTaskInArrayList = historyManager.getHistory().getFirst();
+        assertTasks(task, firstTaskInArrayList);
+    }
+
+    @Test
+    @DisplayName("проверка уникальности при добавлении одинаковых задач и порядка перечисления")
+    void shouldUniqueWhenAddTasks() {
+        Task task = new Task("Title", "Description", TaskStatus.NEW).setId(1);
+        Subtask subtask = new Subtask("Title", "description", TaskStatus.IN_PROGRESS, 3).setId(2);
+        Epic epic = new Epic("Title", "description").setId(3);
+
+        historyManager.add(task);
+        historyManager.add(subtask);
+        historyManager.add(epic);
+        List<Task> tasks = historyManager.getHistory();
+        System.out.println("Порядок до повторных добавлений задач: \n" + tasks);
+        historyManager.add(epic);
+        historyManager.add(subtask);
+        historyManager.add(task);
+
+        assertEquals(3, historyManager.history.size());
+        tasks = historyManager.getHistory();
+
+        assertTasks(epic, tasks.get(0));
+        assertTasks(subtask, tasks.get(1));
+        assertTasks(task, tasks.get(2));
+
+        System.out.println("Порядок после: \n" + tasks);
+
+        historyManager.remove(epic.getId());
+
+        assertEquals(2, historyManager.history.size());
+        tasks = historyManager.getHistory();
+        assertTasks(subtask, tasks.get(0));
+        assertTasks(task, tasks.get(1));
+
+        System.out.println("Порядок после удаления эпика на месте root: \n" + tasks);
+
+        historyManager.remove(task.getId());
+        assertEquals(1, historyManager.history.size());
+        tasks = historyManager.getHistory();
+        assertTasks(subtask, tasks.getFirst());
+
+        System.out.println("Порядок после удаления задачи с конца: \n" + tasks);
+
+        historyManager.remove(subtask.getId());
+        assertTrue(historyManager.history.isEmpty());
     }
 
     private void assertTasks(Task task, Task task1) {
