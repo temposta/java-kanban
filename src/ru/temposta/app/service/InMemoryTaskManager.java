@@ -45,21 +45,25 @@ public class InMemoryTaskManager implements TaskManager {
     //b.1 Удаление всех задач.
     @Override
     public void clearTasks() {
+        tasks.forEach((key, value) -> historyManager.remove(key));
         tasks.clear();
     }
 
     //b.2 Удаление всех задач - Эпиков.
     @Override
     public void clearEpics() {
+        epics.forEach((key, value) -> historyManager.remove(key));
         epics.clear();
         //Удалять Эпики без удаления подзадач не имеет смысла
         //поэтому удаляем и все подзадачи
+        subtasks.forEach((key, value) -> historyManager.remove(key));
         subtasks.clear();
     }
 
     //b.3 Удаление всех задач - Подзадач.
     @Override
     public void clearSubtasks() {
+        subtasks.forEach((key, value) -> historyManager.remove(key));
         subtasks.clear();
         //В связи с удалением подзадач, обновляем статусы Эпиков
         //чистим списки подзадач
@@ -134,6 +138,7 @@ public class InMemoryTaskManager implements TaskManager {
         } else if (subtasks.get(id) != null) {
             removeSubtask(id);
         }
+        historyManager.remove(id);
     }
 
     @Override
