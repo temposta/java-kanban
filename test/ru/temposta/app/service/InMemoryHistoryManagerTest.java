@@ -15,12 +15,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Менеджер истории")
 class InMemoryHistoryManagerTest {
     InMemoryHistoryManager historyManager;
-    InMemoryHistoryManager historyManagerSize5;
 
     @BeforeEach
     void setUp() {
         historyManager = new InMemoryHistoryManager();
-        historyManagerSize5 = new InMemoryHistoryManager(5);
     }
 
     @Test
@@ -31,14 +29,10 @@ class InMemoryHistoryManagerTest {
 
         //тестируем
         historyManager.add(task);
-        historyManagerSize5.add(task);
 
         //проверяем
         assertFalse(historyManager.history.isEmpty());
         assertEquals(1, historyManager.history.size());
-
-        assertFalse(historyManagerSize5.history.isEmpty());
-        assertEquals(1, historyManagerSize5.history.size());
     }
 
     @Test
@@ -57,7 +51,7 @@ class InMemoryHistoryManagerTest {
     }
 
     @Test
-    @DisplayName("при добавлении 13 задач размер списка равен 10")
+    @DisplayName("при добавлении 13 задач размер списка равен 13")
     void shouldAdd13Tasks() {
         //подготовка данных
         Task task = new Task("Title", "Description", TaskStatus.NEW);
@@ -68,24 +62,8 @@ class InMemoryHistoryManagerTest {
         }
 
         //проверяем
-        assertEquals(10, historyManager.history.size());
+        assertEquals(13, historyManager.history.size());
     }
-
-    @Test
-    @DisplayName("при добавлении 13 задач размер списка равен 5 для истории с 5 элементами")
-    void shouldAdd13TasksWhenSize5() {
-        //подготовка данных
-        Task task = new Task("Title", "Description", TaskStatus.NEW);
-
-        //тестируем
-        for (int i = 0; i < 13; i++) {
-            historyManagerSize5.add(task);
-        }
-
-        //проверяем
-        assertEquals(5, historyManagerSize5.history.size());
-    }
-
 
     @Test
     @DisplayName("получение списка просмотренных задач при вызове метода")

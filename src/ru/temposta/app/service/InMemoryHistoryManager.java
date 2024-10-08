@@ -6,26 +6,27 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final int historySize;
+    private static class Node {
+        Task item;
+        Node prev;
+        Node next;
+
+        Node(Task item, Node prev, Node next) {
+            this.item = item;
+            this.prev = prev;
+            this.next = next;
+        }
+    }
+
     List<Task> history;
 
     public InMemoryHistoryManager() {
         history = new LinkedList<>();
-        historySize = 10;
-    }
-
-    //Конструктор с указанием размера истории просмотров
-    public InMemoryHistoryManager(int historySize) {
-        history = new LinkedList<>();
-        this.historySize = historySize;
     }
 
     @Override
     public void add(Task task) {
         history.add(task);
-        if (history.size() > historySize) {
-            history.removeFirst();
-        }
     }
 
     @Override
