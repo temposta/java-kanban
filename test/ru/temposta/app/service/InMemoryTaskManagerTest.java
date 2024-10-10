@@ -34,6 +34,11 @@ class InMemoryTaskManagerTest {
             }
 
             @Override
+            public void remove(int id) {
+
+            }
+
+            @Override
             public List<Task> getHistory() {
                 return List.of();
             }
