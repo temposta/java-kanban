@@ -7,9 +7,6 @@ import ru.temposta.app.model.TaskStatus;
 import ru.temposta.app.service.TaskManager;
 import ru.temposta.app.util.Managers;
 
-import java.util.List;
-
-
 public class Main {
 
     public static void main(String[] args) {
@@ -56,14 +53,5 @@ public class Main {
         //5. Удалите эпик с тремя подзадачами и убедитесь, что из истории удалился как сам эпик, так и все его подзадачи.
         taskManager.removeTaskById(epic1.getId());
         System.out.println("taskManager.getHistory() = " + taskManager.getHistory());
-
-        //тестируем доступность изменения истории в рамках исследований кода
-        List<Task> history = taskManager.getHistory();
-        System.out.println("history = " + history);
-        Task t = history.getFirst();
-        t.setDescription("sdfs");
-        System.out.println("history = " + history);
-        List<Task> history1 = taskManager.getHistory();
-        System.out.println("history1 = " + history1);
     }
 }
