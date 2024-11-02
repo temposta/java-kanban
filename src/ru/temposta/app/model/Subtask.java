@@ -13,11 +13,6 @@ public class Subtask extends Task {
         this.parentEpicID = parentEpic.getId();
     }
 
-    public Subtask(Task task, Epic parentEpic) {
-        super(task.title, task.description, task.status);
-        this.parentEpicID = parentEpic.getId();
-    }
-
     @Override
     public Subtask setId(int id) {
         return (Subtask) super.setId(id);

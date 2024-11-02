@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class InMemoryTaskManager implements TaskManager {
-    private int counter = -1;
+    int counter = -1;
     final Map<Integer, Task> tasks;
     final Map<Integer, Epic> epics;
     final Map<Integer, Subtask> subtasks;
