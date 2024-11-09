@@ -37,11 +37,13 @@ class FileBackedTaskManagerTest {
         try (final FileWriter out = new FileWriter(file, StandardCharsets.UTF_8);
              final BufferedWriter bw = new BufferedWriter(out)) {
             bw.write("""
+                    task_type,id,title,description,task_status,parent_epic_id
                     TASK,0,Title1,Description1,NEW
+                    EPIC,1,Title1,Description1,NEW
                     SUBTASK,2,Title1,Description1,NEW,1
-                    EPIC,1,Title1,Description1,NEW,2
                     #HISTORY#
-                    SUBTASK,2,Title1,Description1,NEW,1""");
+                    2
+                    1""");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -79,13 +81,11 @@ class FileBackedTaskManagerTest {
         assertEquals(expectedEpic.getSubTasksIDList().getFirst(), actualEpic.getSubTasksIDList().getFirst());
 
         List<Task> his = taskManager.getHistory();
-        assertEquals(his.size(), 1);
-        Subtask actualHis = (Subtask) his.getFirst();
-        assertEquals(expectedSubtask.getId(), actualHis.getId());
-        assertEquals(expectedSubtask.getTitle(), actualHis.getTitle());
-        assertEquals(expectedSubtask.getDescription(), actualHis.getDescription());
-        assertEquals(expectedSubtask.getStatus(), actualHis.getStatus());
-        assertEquals(expectedSubtask.getParentEpicID(), actualHis.getParentEpicID());
+        assertEquals(his.size(), 2);
+        Task actualHis = his.getFirst();
+        assertEquals(1, actualHis.getId());
+        actualHis = his.get(1);
+        assertEquals(2, actualHis.getId());
 
     }
 
@@ -105,11 +105,12 @@ class FileBackedTaskManagerTest {
             String fileContent = reader.lines().collect(Collectors.joining("\n"));
 
             String expectedContent = """
+                    task_type,id,title,description,task_status,parent_epic_id
                     TASK,0,Title1,Description1,NEW
+                    EPIC,1,Title1,Description1,NEW
                     SUBTASK,2,Title1,Description1,NEW,1
-                    EPIC,1,Title1,Description1,NEW,2
                     #HISTORY#
-                    SUBTASK,2,Title1,Description1,NEW,1""";
+                    2""";
             assertEquals(fileContent, expectedContent);
         } catch (IOException e) {
             throw new RuntimeException(e);

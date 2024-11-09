@@ -1,13 +1,8 @@
 package ru.temposta.app.service;
 
 import ru.temposta.app.exceptions.ManagerSaveException;
-import ru.temposta.app.mappers.EpicMapper;
-import ru.temposta.app.mappers.SubtaskMapper;
-import ru.temposta.app.mappers.TaskMapper;
-import ru.temposta.app.model.Epic;
-import ru.temposta.app.model.Subtask;
-import ru.temposta.app.model.Task;
-import ru.temposta.app.model.TaskStatus;
+import ru.temposta.app.mappers.Mapper;
+import ru.temposta.app.model.*;
 import ru.temposta.app.util.Managers;
 
 import java.io.*;
@@ -15,7 +10,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    File file;
+    private static final String HEADER_OF_FILE = "task_type,id,title,description,task_status,parent_epic_id";
+    final private File file;
 
     public FileBackedTaskManager(HistoryManager historyManager, File file) {
         super(historyManager);
@@ -64,27 +60,25 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void init(File file) {
         try (final FileReader in = new FileReader(file, StandardCharsets.UTF_8);
              final BufferedReader reader = new BufferedReader(in)) {
-            //final List<String> lines = reader.lines().toList();
+            reader.readLine();
             String line = reader.readLine();
             int maxID = -1;
+            Mapper mapper = new Mapper();
             while (line != null && !line.equals("#HISTORY#") && !line.isBlank()) {
                 String[] split = line.split(",");
                 int id = Integer.parseInt(split[1]);
                 if (id > maxID) maxID = id;
-                switch (split[0]) {
-                    case "TASK":
-                        TaskMapper taskMapper = new TaskMapper();
-                        Task t = taskMapper.toObj().apply(split);
+                switch (TaskType.valueOf(split[0])) {
+                    case TASK:
+                        Task t = mapper.toObj().apply(split);
                         tasks.put(t.getId(), t);
                         break;
-                    case "SUBTASK":
-                        SubtaskMapper subtaskMapper = new SubtaskMapper();
-                        Subtask s = subtaskMapper.toObj().apply(split);
+                    case SUBTASK:
+                        Subtask s = (Subtask) mapper.toObj().apply(split);
                         subtasks.put(s.getId(), s);
                         break;
-                    case "EPIC":
-                        EpicMapper epicMapper = new EpicMapper();
-                        Epic e = epicMapper.toObj().apply(split);
+                    case EPIC:
+                        Epic e = (Epic) mapper.toObj().apply(split);
                         epics.put(e.getId(), e);
                 }
                 line = reader.readLine();
@@ -92,28 +86,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             counter = maxID;
             line = reader.readLine();
             while (line != null) {
-                String[] split = line.split(",");
-                switch (split[0]) {
-                    case "TASK":
-                        TaskMapper taskMapper = new TaskMapper();
-                        Task t = taskMapper.toObj().apply(split);
-                        historyManager.add(t);
-                        break;
-                    case "SUBTASK":
-                        SubtaskMapper subtaskMapper = new SubtaskMapper();
-                        Subtask s = subtaskMapper.toObj().apply(split);
-                        historyManager.add(s);
-                        break;
-                    case "EPIC":
-                        EpicMapper epicMapper = new EpicMapper();
-                        Epic e = epicMapper.toObj().apply(split);
-                        historyManager.add(e);
-                }
+                int id = Integer.parseInt(line);
+                historyManager.add(getAnyTaskById(id));
                 line = reader.readLine();
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка в файле: " + file.getAbsolutePath(), e);
         }
+        subtasks.forEach((key, subtask) -> {
+            Epic parentEpic = epics.get(subtask.getParentEpicID());
+            parentEpic.addSubtaskID(key);
+        });
     }
 
     @Override
@@ -155,52 +138,43 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void save() {
-        TaskMapper taskMapper = new TaskMapper();
-        SubtaskMapper subtaskMapper = new SubtaskMapper();
-        EpicMapper epicMapper = new EpicMapper();
+        Mapper mapper = new Mapper();
 
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            writer.write("");
-            saveTasks(writer, taskMapper);
-            saveSubtasks(writer, subtaskMapper);
-            saveEpics(writer, epicMapper);
+            writer.write(HEADER_OF_FILE);
+            writer.newLine();
+            saveTasks(writer, mapper);
+            saveEpics(writer, mapper);
+            saveSubtasks(writer, mapper);
             writer.append("#HISTORY#");
             writer.newLine();
             List<Task> history = historyManager.getHistory();
             for (Task task : history) {
-                if (task instanceof Subtask) {
-                    writer.append(subtaskMapper.toStr().apply((Subtask) task));
-                    writer.newLine();
-                } else if (task instanceof Epic) {
-                    writer.append(epicMapper.toStr().apply((Epic) task));
-                    writer.newLine();
-                } else if (task != null) {
-                    writer.append(taskMapper.toStr().apply(task));
-                    writer.newLine();
-                }
+                writer.append(String.valueOf(task.getId()));
+                writer.newLine();
             }
         } catch (IOException e) {
             throw new ManagerSaveException("Ошибка в файле: " + file.getAbsolutePath(), e);
         }
     }
 
-    private void saveEpics(BufferedWriter writer, EpicMapper epicMapper) throws IOException {
-        for (Epic epic : super.epics.values()) {
-            writer.append(epicMapper.toStr().apply(epic));
+    private void saveEpics(BufferedWriter writer, Mapper mapper) throws IOException {
+        for (Epic epic : epics.values()) {
+            writer.append(mapper.toStr().apply(epic));
             writer.newLine();
         }
     }
 
-    private void saveSubtasks(BufferedWriter writer, SubtaskMapper subtaskMapper) throws IOException {
-        for (Subtask subtask : super.subtasks.values()) {
-            writer.append(subtaskMapper.toStr().apply(subtask));
+    private void saveSubtasks(BufferedWriter writer, Mapper mapper) throws IOException {
+        for (Subtask subtask : subtasks.values()) {
+            writer.append(mapper.toStr().apply(subtask));
             writer.newLine();
         }
     }
 
-    private void saveTasks(BufferedWriter writer, TaskMapper taskMapper) throws IOException {
-        for (Task task : super.tasks.values()) {
-            writer.append(taskMapper.toStr().apply(task));
+    private void saveTasks(BufferedWriter writer, Mapper mapper) throws IOException {
+        for (Task task : tasks.values()) {
+            writer.append(mapper.toStr().apply(task));
             writer.newLine();
         }
     }
