@@ -34,9 +34,8 @@ class FileBackedTaskManagerTest {
     @Test
     @DisplayName("проверка загрузки из файла")
     void shouldLoadFromFile() {
-        try (final FileWriter out = new FileWriter(file, StandardCharsets.UTF_8);
-             final BufferedWriter bw = new BufferedWriter(out)) {
-            bw.write("""
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
+            writer.write("""
                     task_type,id,title,description,task_status,parent_epic_id
                     TASK,0,Title1,Description1,NEW
                     EPIC,1,Title1,Description1,NEW
