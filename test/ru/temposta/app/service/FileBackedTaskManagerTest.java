@@ -35,14 +35,20 @@ class FileBackedTaskManagerTest {
     @DisplayName("проверка загрузки из файла")
     void shouldLoadFromFile() {
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            writer.write("""
-                    task_type,id,title,description,task_status,parent_epic_id
-                    TASK,0,Title1,Description1,NEW
-                    EPIC,1,Title1,Description1,NEW
-                    SUBTASK,2,Title1,Description1,NEW,1
-                    #HISTORY#
-                    2
-                    1""");
+            writer.append("task_type,id,title,description,task_status,parent_epic_id");
+            writer.newLine();
+            writer.append("TASK,0,Title1,Description1,NEW");
+            writer.newLine();
+            writer.append("EPIC,1,Title1,Description1,NEW");
+            writer.newLine();
+            writer.append("SUBTASK,2,Title1,Description1,NEW,1");
+            writer.newLine();
+            writer.append("#HISTORY#");
+            writer.newLine();
+            writer.append("2");
+            writer.newLine();
+            writer.append("1");
+            writer.newLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -82,9 +88,9 @@ class FileBackedTaskManagerTest {
         List<Task> his = taskManager.getHistory();
         assertEquals(his.size(), 2);
         Task actualHis = his.getFirst();
-        assertEquals(1, actualHis.getId());
-        actualHis = his.get(1);
         assertEquals(2, actualHis.getId());
+        actualHis = his.get(1);
+        assertEquals(1, actualHis.getId());
 
     }
 
