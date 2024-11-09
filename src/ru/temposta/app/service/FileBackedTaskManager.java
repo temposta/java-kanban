@@ -11,7 +11,7 @@ import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private static final String HEADER_OF_FILE = "task_type,id,title,description,task_status,parent_epic_id";
-    final private File file;
+    private final File file;
 
     public FileBackedTaskManager(HistoryManager historyManager, File file) {
         super(historyManager);
