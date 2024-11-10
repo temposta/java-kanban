@@ -1,5 +1,5 @@
 # java-kanban
 Repository for homework project.
 
-## sprint_6-solution
+## sprint_7-solution-in-file-manager
 
