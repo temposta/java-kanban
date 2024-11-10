@@ -12,6 +12,7 @@ import java.util.List;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private static final String HEADER_OF_FILE = "task_type,id,title,description,task_status,parent_epic_id";
     private final File file;
+    private final Mapper mapper = new Mapper();
 
     public FileBackedTaskManager(HistoryManager historyManager, File file) {
         super(historyManager);
@@ -138,7 +139,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private void save() {
-        Mapper mapper = new Mapper();
 
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             writer.write(HEADER_OF_FILE);
