@@ -37,9 +37,9 @@ class FileBackedTaskManagerTest {
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             writer.append("task_type,id,title,description,task_status,parent_epic_id");
             writer.newLine();
-            writer.append("TASK,0,Title1,Description1,NEW");
+            writer.append("TASK,0,Title1,Description1,NEW,null");
             writer.newLine();
-            writer.append("EPIC,1,Title1,Description1,NEW");
+            writer.append("EPIC,1,Title1,Description1,NEW,null");
             writer.newLine();
             writer.append("SUBTASK,2,Title1,Description1,NEW,1");
             writer.newLine();
@@ -111,8 +111,8 @@ class FileBackedTaskManagerTest {
 
             String expectedContent = """
                     task_type,id,title,description,task_status,parent_epic_id
-                    TASK,0,Title1,Description1,NEW
-                    EPIC,1,Title1,Description1,NEW
+                    TASK,0,Title1,Description1,NEW,null
+                    EPIC,1,Title1,Description1,NEW,null
                     SUBTASK,2,Title1,Description1,NEW,1
                     #HISTORY#
                     2""";

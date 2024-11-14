@@ -46,12 +46,13 @@ public class Mapper {
                 .append(",").append(task.getId())
                 .append(",").append(task.getTitle())
                 .append(",").append(task.getDescription())
-                .append(",").append(task.getStatus());
-        if (type == TaskType.SUBTASK) {
-            sb.append(",");
-            Subtask subtask = (Subtask) task;
-            sb.append(subtask.getParentEpicID());
-        }
+                .append(",").append(task.getStatus())
+                .append(",").append(task.getParentEpicID());
+//        if (type == TaskType.SUBTASK) {
+//            sb.append(",");
+//            Subtask subtask = (Subtask) task;
+//            sb.append(subtask.getParentEpicID());
+//        }
         return sb.toString();
     }
 }

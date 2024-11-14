@@ -18,7 +18,8 @@ public class Subtask extends Task {
         return (Subtask) super.setId(id);
     }
 
-    public int getParentEpicID() {
+    @Override
+    public Integer getParentEpicID() {
         return parentEpicID;
     }
 

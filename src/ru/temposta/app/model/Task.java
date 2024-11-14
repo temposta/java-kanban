@@ -50,6 +50,10 @@ public class Task {
         return TaskType.TASK;
     }
 
+    public Integer getParentEpicID() {
+        return null;
+    }
+
     @Override
     public String toString() {
         return "Task{" +

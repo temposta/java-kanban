@@ -23,11 +23,11 @@ class MapperTest {
     @BeforeEach
     void setUp() {
         task = new Task("t", "d", TaskStatus.NEW).setId(1);
-        taskString = "TASK,1,t,d,NEW";
+        taskString = "TASK,1,t,d,NEW,null";
         subtask = new Subtask("ts", "sd", TaskStatus.NEW, 3).setId(4);
         subtaskString = "SUBTASK,4,ts,sd,NEW,3";
         epic = new Epic("dsd", "sdf").setId(3);
-        epicString = "EPIC,3,dsd,sdf,NEW";
+        epicString = "EPIC,3,dsd,sdf,NEW,null";
     }
 
     @Test
