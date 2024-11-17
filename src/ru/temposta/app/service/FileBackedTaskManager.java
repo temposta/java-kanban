@@ -7,10 +7,12 @@ import ru.temposta.app.util.Managers;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.TreeSet;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private static final String HEADER_OF_FILE = "task_type,id,title,description,task_status,parent_epic_id,duration,start_time";
+    private static final String HEADER_OF_FILE = "task_type,id,title,description,task_status,parent_epic_id,duration,start_time,take_priority";
     private final File file;
     private final Mapper mapper = new Mapper();
 
@@ -35,6 +37,8 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
         //Дополнительное задание спринт 6. Реализуем пользовательский сценарий
         Task task1 = new Task("Title1", "Des1", TaskStatus.NEW);
+        task1.setStartTime(LocalDateTime.parse("2024-03-25T10:30"));
+        task1.setDuration(30);
         Task task2 = new Task("Title2", "Des2", TaskStatus.NEW);
         Epic epic1 = new Epic("Title1", "Des1");
         Epic epic2 = new Epic("Title2", "Des2");
@@ -56,6 +60,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         taskManager.getAnyTaskById(4);
         taskManager.getAnyTaskById(5);
         taskManager.getAnyTaskById(6);
+
+        TreeSet<Task> priority = taskManager.getPrioritizedTasks();
+        System.out.println("priority = " + priority);
     }
 
     public void init(File file) {

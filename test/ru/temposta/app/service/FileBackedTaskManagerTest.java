@@ -36,20 +36,19 @@ class FileBackedTaskManagerTest {
     @DisplayName("проверка загрузки из файла")
     void shouldLoadFromFile() {
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            writer.append("task_type,id,title,description,task_status,parent_epic_id,duration,start_time");
+            writer.append("task_type,id,title,description,task_status,parent_epic_id,duration,start_time,take_priority");
             writer.newLine();
-            writer.append("TASK,0,Title1,Description1,NEW,null,10,2024-03-26T09:30");
+            writer.append("TASK,0,Title1,Description1,NEW,null,10,2024-03-26T09:30,true");
             writer.newLine();
-            writer.append("EPIC,1,Title1,Description1,NEW,null,10,2024-03-26T09:30");
+            writer.append("EPIC,1,Title1,Description1,NEW,null,10,2024-03-26T09:30,false");
             writer.newLine();
-            writer.append("SUBTASK,2,Title1,Description1,NEW,1,10,2024-03-26T09:30");
+            writer.append("SUBTASK,2,Title1,Description1,NEW,1,10,2024-03-26T09:30,true");
             writer.newLine();
             writer.append("#HISTORY#");
             writer.newLine();
             writer.append("2");
             writer.newLine();
             writer.append("1");
-            writer.newLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -112,10 +111,10 @@ class FileBackedTaskManagerTest {
             String fileContent = reader.lines().collect(Collectors.joining("\n"));
 
             String expectedContent = """
-                    task_type,id,title,description,task_status,parent_epic_id,duration,start_time
-                    TASK,0,Title1,Description1,NEW,null,10,2024-03-26T09:30
-                    EPIC,1,Title1,Description1,NEW,null,10,2024-03-26T09:45
-                    SUBTASK,2,Title1,Description1,NEW,1,10,2024-03-26T09:45
+                    task_type,id,title,description,task_status,parent_epic_id,duration,start_time,take_priority
+                    TASK,0,Title1,Description1,NEW,null,10,2024-03-26T09:30,true
+                    EPIC,1,Title1,Description1,NEW,null,10,2024-03-26T09:45,false
+                    SUBTASK,2,Title1,Description1,NEW,1,10,2024-03-26T09:45,true
                     #HISTORY#
                     2""";
             assertEquals(fileContent, expectedContent);

@@ -44,6 +44,11 @@ public class Epic extends Task {
         return TaskType.EPIC;
     }
 
+    @Override
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
     public void setEndTime(LocalDateTime endTime) {
         this.endTime = endTime;
     }

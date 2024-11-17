@@ -185,6 +185,8 @@ class InMemoryTaskManagerTest {
     @Test
     @DisplayName("проверка логики теста на пересечение задач")
     void shouldChecksValidIntersection() {
+        taskManager.clearEpics();
+        taskManager.clearTasks();
         task.setStartTime(LocalDateTime.of(2024, 11, 10, 10, 0));
         task.setDuration(20);
         task2.setStartTime(LocalDateTime.of(2024, 11, 10, 10, 21));
@@ -205,6 +207,52 @@ class InMemoryTaskManagerTest {
         task3.setStartTime(LocalDateTime.of(2024, 11, 10, 10, 10));
         task3.setDuration(15);
         assertThrows(ValidationException.class, () -> taskManager.checkTimeIntersection(task3));
+    }
+
+    @Test
+    @DisplayName("Проверка отсутствия в списке приоритета при добавлении задач без приоритета")
+    void shouldCorrectNotPrioritizedTasks() {
+        taskManager.clearEpics();
+        taskManager.clearTasks();
+        //Проверка пустого TreeSet при добавлении задачи без приоритета
+        task = taskManager.addAnyTask(new Task("Title1", "Description1", TaskStatus.NEW));
+        taskManager.addAnyTask(task);
+        assertTrue(taskManager.prioritizedTasks.isEmpty());
+        epic = (Epic) taskManager.addAnyTask(new Epic("Title", "Description"));
+        taskManager.addAnyTask(epic);
+        assertTrue(taskManager.prioritizedTasks.isEmpty());
+        subtask = (Subtask) taskManager.addAnyTask(new Subtask("Title1", "Description1",
+                TaskStatus.NEW, epic.getId()));
+        taskManager.addAnyTask(subtask);
+        assertTrue(taskManager.prioritizedTasks.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Проверка приоритета при добавлении задач c приоритетом")
+    void shouldCorrectPrioritizedTasks() {
+        taskManager.clearEpics();
+        taskManager.clearTasks();
+        //Проверка пустого TreeSet при добавлении задач c приоритетом
+        task = taskManager.addAnyTask(new Task("Title1", "Description1", TaskStatus.NEW));
+        task.setStartTime(LocalDateTime.parse("2024-03-26T09:30"));
+        task.setDuration(30);
+        taskManager.addAnyTask(task);
+        assertEquals(taskManager.prioritizedTasks.size(), 1);
+
+        epic = (Epic) taskManager.addAnyTask(new Epic("Title", "Description"));
+        taskManager.addAnyTask(epic);
+        System.out.println("taskManager.getPrioritizedTasks() = " + taskManager.getPrioritizedTasks());
+        assertEquals(taskManager.prioritizedTasks.size(), 1);
+        subtask = (Subtask) taskManager.addAnyTask(new Subtask("Title1", "Description1",
+                TaskStatus.NEW, epic.getId()));
+        subtask.setStartTime(LocalDateTime.parse("2024-03-25T10:30"));
+        subtask.setDuration(30);
+        taskManager.addAnyTask(subtask);
+        //проверям наличие подзадачи и отсутствие эпика
+        assertEquals(taskManager.prioritizedTasks.size(), 2);
+        //проверяем, что у подзадачи выше приоритет
+        assertEquals(taskManager.prioritizedTasks.getFirst().getId(), subtask.getId());
+        System.out.println("taskManager.getPrioritizedTasks() = " + taskManager.getPrioritizedTasks());
     }
 
 

@@ -29,17 +29,17 @@ class MapperTest {
     void setUp() {
         localDateTime = LocalDateTime.of(2024, 3, 26, 9, 30);
         task = new Task("t", "d", TaskStatus.NEW, localDateTime, 15).setId(1);
-        taskString = "TASK,1,t,d,NEW,null,15,2024-03-26T09:30";
+        taskString = "TASK,1,t,d,NEW,null,15,2024-03-26T09:30,true";
         subtask = new Subtask("ts", "sd", TaskStatus.NEW, 3, localDateTime, 15).setId(4);
-        subtaskString = "SUBTASK,4,ts,sd,NEW,3,15,2024-03-26T09:30";
+        subtaskString = "SUBTASK,4,ts,sd,NEW,3,15,2024-03-26T09:30,true";
         epic = new Epic("dsd", "sdf")
                 .setId(3);
         epic.setDuration(15);
         epic.setStartTime(localDateTime);
-        epicString = "EPIC,3,dsd,sdf,NEW,null,15,2024-03-26T09:30";
+        epicString = "EPIC,3,dsd,sdf,NEW,null,15,2024-03-26T09:30,false";
         epicWithNullTime = new Epic("dsd", "sdf")
                 .setId(3);
-        epicStringWithNullTime = "EPIC,3,dsd,sdf,NEW,null,0,null";
+        epicStringWithNullTime = "EPIC,3,dsd,sdf,NEW,null,0,null,false";
     }
 
     @Test

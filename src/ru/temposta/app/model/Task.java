@@ -96,6 +96,11 @@ public class Task {
         return isTakePriority;
     }
 
+    public Task setTakePriority(boolean takePriority) {
+        isTakePriority = takePriority;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Task{" +

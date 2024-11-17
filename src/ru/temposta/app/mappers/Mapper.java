@@ -26,14 +26,14 @@ public class Mapper {
                         TaskStatus.valueOf(s[4]),
                         LocalDateTime.parse(s[7]),
                         Integer.parseInt(s[6])
-                ).setId(Integer.parseInt(s[1]));
+                ).setId(Integer.parseInt(s[1])).setTakePriority(Boolean.getBoolean(s[8]));
             case EPIC:
                 Epic epic = new Epic(s[2], s[3]).setId(Integer.parseInt(s[1]));
                 epic.setStatus(TaskStatus.valueOf(s[4]));
                 epic.setDuration(Integer.parseInt(s[6]));
                 String startTime = s[7];
                 if (!startTime.equals("null")) epic.setStartTime(LocalDateTime.parse(s[7]));
-                return epic;
+                return epic.setTakePriority(Boolean.getBoolean(s[8]));
             case SUBTASK:
                 int id = Integer.parseInt(s[1]);
                 int parentEpicID = Integer.parseInt(s[5]);
@@ -43,7 +43,7 @@ public class Mapper {
                         parentEpicID,
                         LocalDateTime.parse(s[7]),
                         Integer.parseInt(s[6])
-                ).setId(id);
+                ).setId(id).setTakePriority(Boolean.getBoolean(s[8]));
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
         }
@@ -61,7 +61,8 @@ public class Mapper {
                 .append(",").append(task.getStatus())
                 .append(",").append(task.getParentEpicID())
                 .append(",").append(task.getDuration())
-                .append(",").append(task.getStartTime());
+                .append(",").append(task.getStartTime())
+                .append(",").append(task.isTakePriority());
         return sb.toString();
     }
 }
