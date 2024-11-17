@@ -6,7 +6,7 @@ import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static class Node {
-        Task item;
+        final Task item;
         Node prev;
         Node next;
 
@@ -17,7 +17,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         }
     }
 
-    Map<Integer, Node> history;
+    final Map<Integer, Node> history;
     private Node root;
     private Node last;
 

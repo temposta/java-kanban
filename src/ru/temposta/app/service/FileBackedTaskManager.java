@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private static final String HEADER_OF_FILE = "task_type,id,title,description,task_status,parent_epic_id";
+    private static final String HEADER_OF_FILE = "task_type,id,title,description,task_status,parent_epic_id,duration,start_time";
     private final File file;
     private final Mapper mapper = new Mapper();
 
@@ -34,17 +34,17 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         TaskManager taskManager = FileBackedTaskManager.loadFromFile(new File("src/database/database.txt"));
 
         //Дополнительное задание спринт 6. Реализуем пользовательский сценарий
-        Task task1 = new Task("Title1", "Description1", TaskStatus.NEW);
-        Task task2 = new Task("Title2", "Description2", TaskStatus.NEW);
-        Epic epic1 = new Epic("Title1", "Description1");
-        Epic epic2 = new Epic("Title2", "Description2");
+        Task task1 = new Task("Title1", "Des1", TaskStatus.NEW);
+        Task task2 = new Task("Title2", "Des2", TaskStatus.NEW);
+        Epic epic1 = new Epic("Title1", "Des1");
+        Epic epic2 = new Epic("Title2", "Des2");
         taskManager.addAnyTask(task1);
         taskManager.addAnyTask(task2);
         taskManager.addAnyTask(epic1);
         taskManager.addAnyTask(epic2);
-        Subtask subtask1 = new Subtask("Title1", "Description1", TaskStatus.NEW, epic1);
-        Subtask subtask2 = new Subtask("Title2", "Description2", TaskStatus.NEW, epic1);
-        Subtask subtask3 = new Subtask("Title3", "Description3", TaskStatus.NEW, epic1);
+        Subtask subtask1 = new Subtask("Title1", "Des1", TaskStatus.NEW, epic1);
+        Subtask subtask2 = new Subtask("Title2", "Des2", TaskStatus.NEW, epic1);
+        Subtask subtask3 = new Subtask("Title3", "Des3", TaskStatus.NEW, epic1);
         taskManager.addAnyTask(subtask1);
         taskManager.addAnyTask(subtask2);
         taskManager.addAnyTask(subtask3);

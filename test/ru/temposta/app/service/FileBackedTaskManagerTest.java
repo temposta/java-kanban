@@ -10,6 +10,7 @@ import ru.temposta.app.model.TaskStatus;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,13 +36,13 @@ class FileBackedTaskManagerTest {
     @DisplayName("проверка загрузки из файла")
     void shouldLoadFromFile() {
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
-            writer.append("task_type,id,title,description,task_status,parent_epic_id");
+            writer.append("task_type,id,title,description,task_status,parent_epic_id,duration,start_time");
             writer.newLine();
-            writer.append("TASK,0,Title1,Description1,NEW,null");
+            writer.append("TASK,0,Title1,Description1,NEW,null,10,2024-03-26T09:30");
             writer.newLine();
-            writer.append("EPIC,1,Title1,Description1,NEW,null");
+            writer.append("EPIC,1,Title1,Description1,NEW,null,10,2024-03-26T09:30");
             writer.newLine();
-            writer.append("SUBTASK,2,Title1,Description1,NEW,1");
+            writer.append("SUBTASK,2,Title1,Description1,NEW,1,10,2024-03-26T09:30");
             writer.newLine();
             writer.append("#HISTORY#");
             writer.newLine();
@@ -97,11 +98,12 @@ class FileBackedTaskManagerTest {
     @Test
     @DisplayName("проверка сохранения в файл")
     void shouldSaveToFile() {
-        Task task1 = new Task("Title1", "Description1", TaskStatus.NEW);
+        LocalDateTime startTime = LocalDateTime.of(2024, 3, 26, 9, 30);
+        Task task1 = new Task("Title1", "Description1", TaskStatus.NEW, startTime, 10);
         Epic epic1 = new Epic("Title1", "Description1");
         taskManager.addAnyTask(task1);
         taskManager.addAnyTask(epic1);
-        Subtask subtask1 = new Subtask("Title1", "Description1", TaskStatus.NEW, epic1);
+        Subtask subtask1 = new Subtask("Title1", "Description1", TaskStatus.NEW, epic1.getId(), startTime.plusMinutes(15), 10);
         taskManager.addAnyTask(subtask1);
         taskManager.getAnyTaskById(2);
 
@@ -110,10 +112,10 @@ class FileBackedTaskManagerTest {
             String fileContent = reader.lines().collect(Collectors.joining("\n"));
 
             String expectedContent = """
-                    task_type,id,title,description,task_status,parent_epic_id
-                    TASK,0,Title1,Description1,NEW,null
-                    EPIC,1,Title1,Description1,NEW,null
-                    SUBTASK,2,Title1,Description1,NEW,1
+                    task_type,id,title,description,task_status,parent_epic_id,duration,start_time
+                    TASK,0,Title1,Description1,NEW,null,10,2024-03-26T09:30
+                    EPIC,1,Title1,Description1,NEW,null,10,2024-03-26T09:45
+                    SUBTASK,2,Title1,Description1,NEW,1,10,2024-03-26T09:45
                     #HISTORY#
                     2""";
             assertEquals(fileContent, expectedContent);

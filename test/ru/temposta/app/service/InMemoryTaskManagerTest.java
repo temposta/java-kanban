@@ -3,11 +3,13 @@ package ru.temposta.app.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.temposta.app.exceptions.ValidationException;
 import ru.temposta.app.model.Epic;
 import ru.temposta.app.model.Subtask;
 import ru.temposta.app.model.Task;
 import ru.temposta.app.model.TaskStatus;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -179,4 +181,31 @@ class InMemoryTaskManagerTest {
         assertEquals(taskManager.epics.size(), 1);
         assertEquals(taskManager.subtasks.size(), subtasksSize - 1);
     }
+
+    @Test
+    @DisplayName("проверка логики теста на пересечение задач")
+    void shouldChecksValidIntersection() {
+        task.setStartTime(LocalDateTime.of(2024, 11, 10, 10, 0));
+        task.setDuration(20);
+        task2.setStartTime(LocalDateTime.of(2024, 11, 10, 10, 21));
+        task2.setDuration(9);
+        taskManager.prioritizedTasks.add(task);
+        taskManager.prioritizedTasks.add(task2);
+        task3.setStartTime(LocalDateTime.of(2024, 11, 10, 9, 50));
+        task3.setDuration(9);
+        assertDoesNotThrow(() -> taskManager.checkTimeIntersection(task3));
+        task3.setStartTime(LocalDateTime.of(2024, 11, 10, 10, 20));
+        task3.setDuration(1);
+        assertDoesNotThrow(() -> taskManager.checkTimeIntersection(task3));
+        task3.setStartTime(LocalDateTime.of(2024, 11, 10, 10, 50));
+        assertDoesNotThrow(() -> taskManager.checkTimeIntersection(task3));
+        task3.setStartTime(LocalDateTime.of(2024, 11, 10, 10, 5));
+        task3.setDuration(5);
+        assertThrows(ValidationException.class, () -> taskManager.checkTimeIntersection(task3));
+        task3.setStartTime(LocalDateTime.of(2024, 11, 10, 10, 10));
+        task3.setDuration(15);
+        assertThrows(ValidationException.class, () -> taskManager.checkTimeIntersection(task3));
+    }
+
+
 }

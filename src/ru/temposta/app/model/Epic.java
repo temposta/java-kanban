@@ -1,14 +1,20 @@
 package ru.temposta.app.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
     private final List<Integer> subTasks;
+    protected LocalDateTime endTime;
 
     public Epic(String title, String description) {
         super(title, description, TaskStatus.NEW);
         subTasks = new ArrayList<>();
+        startTime = null;
+        endTime = null;
+        duration = 0;
+        isTakePriority = false;
     }
 
     public void addSubtaskID(int id) {
@@ -38,6 +44,15 @@ public class Epic extends Task {
         return TaskType.EPIC;
     }
 
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
     @Override
     public String toString() {
         return "Epic{" +
@@ -46,6 +61,9 @@ public class Epic extends Task {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", status=" + status +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", duration=" + duration +
                 '}';
     }
 }
