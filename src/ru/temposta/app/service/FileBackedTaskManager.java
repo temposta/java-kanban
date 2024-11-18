@@ -2,15 +2,21 @@ package ru.temposta.app.service;
 
 import ru.temposta.app.exceptions.ManagerSaveException;
 import ru.temposta.app.mappers.Mapper;
-import ru.temposta.app.model.*;
+import ru.temposta.app.model.Epic;
+import ru.temposta.app.model.Subtask;
+import ru.temposta.app.model.Task;
+import ru.temposta.app.model.TaskStatus;
+import ru.temposta.app.model.TaskType;
 import ru.temposta.app.util.Managers;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.TreeSet;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
-    private static final String HEADER_OF_FILE = "task_type,id,title,description,task_status,parent_epic_id";
+    private static final String HEADER_OF_FILE = "task_type,id,title,description,task_status,parent_epic_id,duration,start_time,take_priority";
     private final File file;
     private final Mapper mapper = new Mapper();
 
@@ -34,17 +40,19 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         TaskManager taskManager = FileBackedTaskManager.loadFromFile(new File("src/database/database.txt"));
 
         //Дополнительное задание спринт 6. Реализуем пользовательский сценарий
-        Task task1 = new Task("Title1", "Description1", TaskStatus.NEW);
-        Task task2 = new Task("Title2", "Description2", TaskStatus.NEW);
-        Epic epic1 = new Epic("Title1", "Description1");
-        Epic epic2 = new Epic("Title2", "Description2");
+        Task task1 = new Task("Title1", "Des1", TaskStatus.NEW);
+        task1.setStartTime(LocalDateTime.parse("2024-03-25T10:30"));
+        task1.setDuration(30);
+        Task task2 = new Task("Title2", "Des2", TaskStatus.NEW);
+        Epic epic1 = new Epic("Title1", "Des1");
+        Epic epic2 = new Epic("Title2", "Des2");
         taskManager.addAnyTask(task1);
         taskManager.addAnyTask(task2);
         taskManager.addAnyTask(epic1);
         taskManager.addAnyTask(epic2);
-        Subtask subtask1 = new Subtask("Title1", "Description1", TaskStatus.NEW, epic1);
-        Subtask subtask2 = new Subtask("Title2", "Description2", TaskStatus.NEW, epic1);
-        Subtask subtask3 = new Subtask("Title3", "Description3", TaskStatus.NEW, epic1);
+        Subtask subtask1 = new Subtask("Title1", "Des1", TaskStatus.NEW, epic1);
+        Subtask subtask2 = new Subtask("Title2", "Des2", TaskStatus.NEW, epic1);
+        Subtask subtask3 = new Subtask("Title3", "Des3", TaskStatus.NEW, epic1);
         taskManager.addAnyTask(subtask1);
         taskManager.addAnyTask(subtask2);
         taskManager.addAnyTask(subtask3);
@@ -56,6 +64,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         taskManager.getAnyTaskById(4);
         taskManager.getAnyTaskById(5);
         taskManager.getAnyTaskById(6);
+
+        TreeSet<Task> priority = taskManager.getPrioritizedTasks();
+        System.out.println("priority = " + priority);
     }
 
     public void init(File file) {

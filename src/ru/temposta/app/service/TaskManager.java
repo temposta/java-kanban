@@ -5,6 +5,7 @@ import ru.temposta.app.model.Subtask;
 import ru.temposta.app.model.Task;
 
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
     //a.1 Получение списка всех задач.
@@ -39,4 +40,6 @@ public interface TaskManager {
     void removeTaskById(int id);
 
     List<Task> getHistory();
+
+    TreeSet<Task> getPrioritizedTasks();
 }
