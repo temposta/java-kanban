@@ -10,7 +10,7 @@ import ru.temposta.app.model.TaskStatus;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Отображение задач, подзадач и эпиков")
 class MapperTest {

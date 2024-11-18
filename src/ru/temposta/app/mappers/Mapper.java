@@ -1,6 +1,10 @@
 package ru.temposta.app.mappers;
 
-import ru.temposta.app.model.*;
+import ru.temposta.app.model.Epic;
+import ru.temposta.app.model.Subtask;
+import ru.temposta.app.model.Task;
+import ru.temposta.app.model.TaskStatus;
+import ru.temposta.app.model.TaskType;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
