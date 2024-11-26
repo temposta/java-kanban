@@ -36,7 +36,7 @@ public class HttpTaskServer {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        server.createContext("/", this::Handler);
+        server.createContext("/", this::commonHandler);
         gsonMapper = new GsonMapper();
         httpHandler = new BaseHttpHandler();
     }
@@ -52,7 +52,7 @@ public class HttpTaskServer {
         System.out.println("Сервер на порту: " + PORT + " остановлен.");
     }
 
-    private void Handler(HttpExchange httpExchange) throws IOException {
+    private void commonHandler(HttpExchange httpExchange) throws IOException {
         try (httpExchange) {
             Endpoint endpoint = getEndpoint(httpExchange);
             try {
