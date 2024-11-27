@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class HttpTaskServer {
     private final TaskManager taskManager;
-    private final HttpServer server;
+    private HttpServer server = null;
     private static final int PORT = 8080;
     GsonMapper gsonMapper;
     BaseHttpHandler httpHandler;
@@ -33,10 +33,10 @@ public class HttpTaskServer {
         this.taskManager = taskManager;
         try {
             server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
+            server.createContext("/", this::commonHandler);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error creating HTTP server");
         }
-        server.createContext("/", this::commonHandler);
         gsonMapper = new GsonMapper();
         httpHandler = new BaseHttpHandler();
     }
@@ -86,12 +86,10 @@ public class HttpTaskServer {
                     default -> throw new IllegalStateException("Unexpected value: " + endpoint);
                 }
             } catch (ValidationException validationException) {
-                //validationException.printStackTrace();
                 httpHandler.sendNonAcceptable(httpExchange);
             } catch (NotFoundException notFoundException) {
                 httpHandler.sendNotFound(httpExchange);
             } catch (IllegalStateException e) {
-                //e.printStackTrace();
                 httpHandler.sendServerError(httpExchange);
             }
         }

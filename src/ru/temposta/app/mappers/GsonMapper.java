@@ -44,13 +44,6 @@ public class GsonMapper {
         return gson.toJson(task);
     }
 
-//    private static String apply(Subtask task) {
-//        return gson.toJson(task);
-//    }
-//
-//    private static String apply(Epic task) {
-//        return gson.toJson(task);
-//    }
 
     //List<Task>, List<Subtask>, List<Epic> --> String
 
