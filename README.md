@@ -1,5 +1,5 @@
 # java-kanban
 Repository for homework project.
 
-## sprint_8-solution-time-and-duration
+## sprint_9-solution-http-api
 
